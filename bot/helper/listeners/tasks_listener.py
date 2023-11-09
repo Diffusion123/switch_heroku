@@ -20,11 +20,13 @@ from bot.helper.mirror_utils.status_utils.zip_status import ZipStatus
 from bot.helper.mirror_utils.status_utils.split_status import SplitStatus
 from bot.helper.mirror_utils.status_utils.gdrive_status import GdriveStatus
 from bot.helper.mirror_utils.status_utils.switch_status import SwitchStatus
+from bot.helper.mirror_utils.status_utils.ddl_status import DDLStatus
 from bot.helper.mirror_utils.status_utils.rclone_status import RcloneStatus
 from bot.helper.mirror_utils.status_utils.queue_status import QueueStatus
 from bot.helper.mirror_utils.gdrive_utlis.upload import gdUpload
 from bot.helper.mirror_utils.upload_utils.switchUploader import SwUploader
 from bot.helper.mirror_utils.rclone_utils.transfer import RcloneTransferHelper
+from bot.helper.mirror_utils.upload_utils.ddlEngine import DDLUploader
 from bot.helper.switch_helper.message_utils import sendMessage, delete_all_messages, update_all_messages
 from bot.helper.switch_helper.button_build import ButtonMaker
 from bot.helper.ext_utils.db_handler import DbManger
@@ -40,6 +42,7 @@ class MirrorLeechListener:
         self.compress = compress
         self.isQbit = isQbit
         self.isLeech = isLeech
+        self.isGdrive = is_gdrive_link(source_url) if source_url else False
         self.tag = tag
         self.seed = seed
         self.newDir = ""
@@ -309,22 +312,32 @@ class MirrorLeechListener:
                 download_dict[self.uid] = sw_upload_status
             await update_all_messages()
             await sw.upload(excluded_files, size)
-        elif is_gdrive_id(self.upDest):
+        elif self.Dest == 'gd':
             size = await get_path_size(up_path)
             LOGGER.info(f"Upload Name: {up_name}")
-            drive = gdUpload(up_name, up_dir, self)
-            upload_status = GdriveStatus(drive, size, self.message, gid, 'up')
+            drive = GoogleDriveHelper(up_name, up_dir, self)
+            upload_status = GdriveStatus(drive, size, self.message, gid, 'up', self.upload_details)
             async with download_dict_lock:
                 download_dict[self.uid] = upload_status
             await update_all_messages()
-            await sync_to_async(drive.upload, size)
+
+            await sync_to_async(drive.upload, up_name, size, self.drive_id)
+        elif self.upDest == 'ddl':
+            size = await get_path_size(up_path)
+            LOGGER.info(f"Upload Name: {up_name} via DDL")
+            ddl = DDLUploader(self, up_name, up_dir)
+            ddl_upload_status = DDLStatus(ddl, size, self.message, gid, self.upload_details)
+            async with download_dict_lock:
+                download_dict[self.uid] = ddl_upload_status
+            await update_all_messages()
+            await ddl.upload(up_name, size)
         else:
             size = await get_path_size(up_path)
-            LOGGER.info(f"Upload Name: {up_name}")
+            LOGGER.info(f"Upload Name: {up_name} via RClone")
             RCTransfer = RcloneTransferHelper(self, up_name)
             async with download_dict_lock:
                 download_dict[self.uid] = RcloneStatus(
-                    RCTransfer, self.message, gid, 'up')
+                    RCTransfer, self.message, gid, 'up', self.upload_details)
             await update_all_messages()
             await RCTransfer.upload(up_path, size)
 
