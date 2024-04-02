@@ -193,7 +193,7 @@ async def _mirror_leech(client, message, isQbit=False, isLeech=False, sameDir=No
             if not await aiopath.exists(token_path):
                 await sendMessage(message, f"token.pickle or service accounts: {token_path} not Exists!")
                 return
-        if not is_gdrive_id(up) and not is_rclone_path(up):
+        if up != 'gdl' and up != 'ddl' and not is_rclone_path(up):
             await sendMessage(message, 'Wrong Upload Destination!')
             return
 
