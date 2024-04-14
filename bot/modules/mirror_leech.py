@@ -29,8 +29,20 @@ async def _mirror_leech(client, message, isQbit=False, isLeech=False, sameDir=No
     text = message.message.split('\n')
     input_list = text[0].split(' ')
 
-    arg_base = {'link': '', '-i': 0, '-m': '', '-d': False, '-j': False, '-s': False, '-b': False,
-                '-n': '', '-e': False, '-z': False, '-up': '', '-rcf': '', '-au': '', '-ap': ''}
+    arg_base = {'link': '',
+                '-i': 0,
+                '-m': '',
+                '-d': False,
+                '-j': False,
+                '-s': False,
+                '-b': False,
+                '-n': '',
+                '-e': False,
+                '-z': False,
+                '-up': '',
+                '-rcf': '',
+                '-au': '',
+                '-ap': ''}
 
     args = arg_parser(input_list[1:], arg_base)
 
@@ -202,23 +214,12 @@ async def _mirror_leech(client, message, isQbit=False, isLeech=False, sameDir=No
         if not is_rclone_path(link):
             await sendMessage(message, link)
             return
-    elif link == 'gdl':
-        link = await gdriveList(client, message).get_target_id('gdd')
-        if not is_gdrive_id(link):
-            await sendMessage(message, link)
-            return
 
-    if not isLeech:
-        if up == 'rcl':
-            up = await RcloneList(client, message).get_rclone_path('rcu')
-            if not is_rclone_path(up):
-                await sendMessage(message, up)
-                return
-        elif up == 'gdl':
-            up = await gdriveList(client, message).get_target_id('gdu')
-            if not is_gdrive_id(up):
-                await sendMessage(message, up)
-                return
+    if up == 'rcl' and not isLeech:
+        up = await RcloneList(client, message).get_rclone_path('rcu')
+        if not is_rclone_path(up):
+            await sendMessage(message, up)
+            return
 
     listener = MirrorLeechListener(
         message, compress, extract, isQbit, isLeech, tag, select, seed, sameDir, rcf, up, join)
