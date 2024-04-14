@@ -86,15 +86,6 @@ class MirrorLeechListener:
         pass
 
     async def onDownloadComplete(self):
-        multi_links = False
-        while True:
-            if self.sameDir:
-                if self.sameDir['total'] in [1, 0] or self.sameDir['total'] > 1 and len(self.sameDir['tasks']) > 1:
-                    break
-            else:
-                break
-            await sleep(0.2)
-
         async with download_dict_lock:
             if self.sameDir and self.sameDir['total'] > 1:
                 self.sameDir['tasks'].remove(self.uid)
