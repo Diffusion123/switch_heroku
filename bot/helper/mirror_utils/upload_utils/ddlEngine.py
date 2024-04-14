@@ -43,7 +43,7 @@ class DDLUploader:
         self.__ddl_servers = {}
         self.__engine = 'DDL v1'
         self.__asyncSession = None
-        self.__user_id = self.__listener.message.from_user.id
+        self.__user_id = self.__listener.message.user_id
     
     async def __user_settings(self):
         user_dict = user_data.get(self.__user_id, {})
