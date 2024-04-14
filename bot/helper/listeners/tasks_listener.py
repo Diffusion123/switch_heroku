@@ -345,7 +345,7 @@ class MirrorLeechListener:
             RCTransfer = RcloneTransferHelper(self, up_name)
             async with download_dict_lock:
                 download_dict[self.uid] = RcloneStatus(
-                    RCTransfer, self.message, gid, 'up', self.upload_details)
+                    RCTransfer, self.message, gid, 'up')
             await update_all_messages()
             await RCTransfer.upload(up_path, size)
 
