@@ -33,7 +33,8 @@ from bot.helper.ext_utils.db_handler import DbManger
 
 
 class MirrorLeechListener:
-    def __init__(self, message, compress=False, extract=False, isQbit=False, isLeech=False, tag=None, select=False, seed=False, source_url=None, sameDir=None, rcFlags=None, upDest=None,isClone=False, join=False):
+    def __init__(self, message, compress=False, extract=False, isQbit=False, isLeech=False, tag=None, select=False, seed=False, source_url=None, sameDir=None, rcFlags=None,
+                 upDest=None, isYtdlp=False, isClone=False, join=False):
         if sameDir is None:
             sameDir = {}
         self.message = message
