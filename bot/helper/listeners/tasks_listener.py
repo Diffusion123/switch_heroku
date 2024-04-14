@@ -63,6 +63,7 @@ class MirrorLeechListener:
             if source_url
             else message.link
         )
+        self.__setModeEng()
 
     async def clean(self):
         try:
