@@ -33,7 +33,7 @@ from bot.helper.ext_utils.db_handler import DbManger
 
 
 class MirrorLeechListener:
-    def __init__(self, message, compress=False, isClone=False, extract=False, isQbit=False, isLeech=False, tag=None, select=False, seed=False, source_url=None, sameDir=None, rcFlags=None, upDest=None, join=False):
+    def __init__(self, message, compress=False, extract=False, isQbit=False, isLeech=False, tag=None, select=False, seed=False, source_url=None, sameDir=None, rcFlags=None, upDest=None,isClone=False, join=False):
         if sameDir is None:
             sameDir = {}
         self.message = message
@@ -42,7 +42,9 @@ class MirrorLeechListener:
         self.compress = compress
         self.isQbit = isQbit
         self.isLeech = isLeech
+        self.isMega = is_mega_link(source_url) if source_url else False
         self.isGdrive = is_gdrive_link(source_url) if source_url else False
+        self.isYtdlp = isYtdlp
         self.tag = tag
         self.seed = seed
         self.newDir = ""
@@ -78,14 +80,24 @@ class MirrorLeechListener:
             pass
 
     def __setModeEng(self):
-        mode = f" #{'Leech' if self.isLeech else 'Clone' if self.isClone else 'RClone' if self.upDest not in ['gd', 'ddl'] else 'DDL' if self.upDest != 'gd' else 'GDrive'}"
+        mode = f" #{'Leech' if self.isLeech else 'Clone' if self.isClone else 'RClone' if self.upPath not in ['gd', 'ddl'] else 'DDL' if self.upPath != 'gd' else 'GDrive'}"
         mode += ' (Zip)' if self.compress else ' (Unzip)' if self.extract else ''
+        mode += f" | #{'qBit' if self.isQbit else 'ytdlp' if self.isYtdlp else 'GDrive' if (self.isClone or self.isGdrive) else 'Mega' if self.isMega else 'Aria2' if self.source_url and self.source_url != self.message.link else 'Tg'}"
         self.upload_details['mode'] = mode
+        
         
     async def onDownloadStart(self):
         pass
 
     async def onDownloadComplete(self):
+        multi_links = False
+        while True:
+            if self.sameDir:
+                if self.sameDir['total'] in [1, 0] or self.sameDir['total'] > 1 and len(self.sameDir['tasks']) > 1:
+                    break
+            else:
+                break
+            await sleep(0.2)
         async with download_dict_lock:
             if self.sameDir and self.sameDir['total'] > 1:
                 self.sameDir['tasks'].remove(self.uid)
