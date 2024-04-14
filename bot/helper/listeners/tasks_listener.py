@@ -341,7 +341,7 @@ class MirrorLeechListener:
             await ddl.upload(up_name, size)
         else:
             size = await get_path_size(up_path)
-            LOGGER.info(f"Upload Name: {up_name} via RClone")
+            LOGGER.info(f"Upload Name: {up_name}")
             RCTransfer = RcloneTransferHelper(self, up_name)
             async with download_dict_lock:
                 download_dict[self.uid] = RcloneStatus(
