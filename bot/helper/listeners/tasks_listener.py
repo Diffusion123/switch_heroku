@@ -52,6 +52,7 @@ class MirrorLeechListener:
         self.sameDir = sameDir
         self.rcFlags = rcFlags
         self.upDest = upDest
+        self.upload_details = {}
         self.join = join
         self.user_id = self.message.user_id
         self.user_dict = user_data.get(self.user_id, {})
