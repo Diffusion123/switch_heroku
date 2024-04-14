@@ -46,7 +46,6 @@ class MirrorLeechListener:
         self.tag = tag
         self.seed = seed
         self.newDir = ""
-        self.isYtdlp = isYtdlp
         self.isClone = isClone
         self.dir = f"{DOWNLOAD_DIR}{self.uid}"
         self.select = select
