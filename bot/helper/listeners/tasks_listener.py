@@ -55,6 +55,13 @@ class MirrorLeechListener:
         self.join = join
         self.user_id = self.message.user_id
         self.user_dict = user_data.get(self.user_id, {})
+        self.source_url = (
+            source_url
+            if source_url and source_url.startswith('http')
+            else f"https://t.me/share/url?url={source_url}"
+            if source_url
+            else message.link
+        )
 
     async def clean(self):
         try:
