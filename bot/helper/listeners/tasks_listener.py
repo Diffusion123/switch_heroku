@@ -319,7 +319,7 @@ class MirrorLeechListener:
                 download_dict[self.uid] = sw_upload_status
             await update_all_messages()
             await sw.upload(excluded_files, size)
-        elif self.Dest == 'gd':
+        elif self.upDest == 'gd':
             size = await get_path_size(up_path)
             LOGGER.info(f"Upload Name: {up_name}")
             drive = GoogleDriveHelper(up_name, up_dir, self)
