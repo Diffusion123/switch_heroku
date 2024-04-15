@@ -88,8 +88,6 @@ class DDLUploader:
                     nlink = await Streamtape(self, login, key).upload(file_path)
                     all_links['StreamTape'] = nlink
                 self.__processed_bytes = 0
-        if not all_links:
-            raise Exception("No DDL Enabled to Upload.")
         return all_links
 
     async def upload(self, file_name, size):
