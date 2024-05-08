@@ -43,7 +43,6 @@ class MirrorLeechListener:
         self.compress = compress
         self.isQbit = isQbit
         self.isLeech = isLeech
-        self.isMega = is_mega_link(source_url) if source_url else False
         self.isGdrive = is_gdrive_link(source_url) if source_url else False
         self.isYtdlp = isYtdlp
         self.tag = tag
@@ -81,7 +80,7 @@ class MirrorLeechListener:
     def __setModeEng(self):
         mode = f" #{'Leech' if self.isLeech else 'Clone' if self.isClone else 'RClone' if self.upDest not in ['gd', 'ddl'] else 'DDL' if self.upDest != 'gd' else 'GDrive'}"
         mode += ' (Zip)' if self.compress else ' (Unzip)' if self.extract else ''
-        mode += f" | #{'qBit' if self.isQbit else 'ytdlp' if self.isYtdlp else 'GDrive' if (self.isClone or self.isGdrive) else 'Mega' if self.isMega else 'Aria2'}"
+        mode += f" | #{'qBit' if self.isQbit else 'ytdlp' if self.isYtdlp else 'GDrive' if (self.isClone or self.isGdrive) else 'Aria2'}"
         self.upload_details['mode'] = mode
         
         
