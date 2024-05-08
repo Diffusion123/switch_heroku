@@ -225,22 +225,12 @@ def is_gdrive_link(url):
 def is_share_link(url):
     return bool(re_match(r'https?:\/\/.+\.gdtot\.\S+|https?:\/\/(filepress|filebee|appdrive|gdflix)\.\S+', url))
 
-
-def is_mega_link(url):
-    return "mega.nz" in url or "mega.co.nz" in url
-
-
 def is_rclone_path(path):
     return bool(re_match(r'^(mrcc:)?(?!magnet:)(?!mtp:)(?![- ])[a-zA-Z0-9_\. -]+(?<! ):(?!.*\/\/).*$|^rcl$', path))
 
 
 def is_gdrive_id(id_):
     return bool(re_match(r'^(mtp:)?(?:[a-zA-Z0-9-_]{33}|[a-zA-Z0-9_-]{19})$|^gdl$|^root$', id_))
-
-
-def get_mega_link_type(url):
-    return "folder" if "folder" in url or "/#F!" in url else "file"
-
 
 def arg_parser(items, arg_base):
     if not items:
