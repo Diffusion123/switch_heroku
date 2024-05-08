@@ -6,12 +6,11 @@ from asyncio import sleep
 from aiofiles.os import path as aiopath
 
 from bot import bot, DOWNLOAD_DIR, LOGGER, config_dict, user_data
-from bot.helper.ext_utils.bot_utils import is_url, is_magnet, is_mega_link, is_gdrive_link, get_content_type, new_task, sync_to_async, is_rclone_path, arg_parser, is_gdrive_id
+from bot.helper.ext_utils.bot_utils import is_url, is_magnet, is_gdrive_link, get_content_type, new_task, sync_to_async, is_rclone_path, arg_parser, is_gdrive_id
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 from bot.helper.mirror_utils.download_utils.aria2_download import add_aria2c_download
 from bot.helper.mirror_utils.download_utils.gd_download import add_gd_download
 from bot.helper.mirror_utils.download_utils.qbit_download import add_qb_torrent
-from bot.helper.mirror_utils.download_utils.mega_download import add_mega_download
 from bot.helper.mirror_utils.download_utils.rclone_download import add_rclone_download
 from bot.helper.mirror_utils.rclone_utils.list import RcloneList
 from bot.helper.mirror_utils.gdrive_utlis.list import gdriveList
@@ -164,7 +163,7 @@ async def _mirror_leech(client, message, isQbit=False, isLeech=False, sameDir=No
     if link:
         LOGGER.info(link)
 
-    if not is_mega_link(link) and not isQbit and not is_magnet(link) and not is_rclone_path(link) \
+    if not isQbit and not is_magnet(link) and not is_rclone_path(link) \
        and not is_gdrive_link(link) and not link.endswith('.torrent') and not is_gdrive_id(link) and not sfile:
         content_type = await get_content_type(link)
         if content_type is None or re_match(r'text/html|text/plain', content_type):
@@ -238,8 +237,6 @@ async def _mirror_leech(client, message, isQbit=False, isLeech=False, sameDir=No
         await add_rclone_download(link, config_path, f'{path}/', name, listener)
     elif is_gdrive_link(link) or is_gdrive_id(link):
         await add_gd_download(link, path, listener, name)
-    elif is_mega_link(link):
-        await add_mega_download(link, f'{path}/', listener, name)
     elif isQbit:
         await add_qb_torrent(link, path, listener, ratio, seed_time)
     else:
